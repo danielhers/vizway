@@ -27,7 +27,7 @@ function fetchMarkers() {
             marker.addListener("click", function() {
                 showDetails(city);
                 showInvolved(city);
-                compared_city = {id: 51, title: "תל אביב-יפו"}
+                compared_city = {id: 5000, title: "תל אביב -יפו"}
                 showComparison(city, compared_city);
             });
         });

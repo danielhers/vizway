@@ -43,9 +43,8 @@ class TimelineHandler(tornado.web.RequestHandler):
 
 
 def create_plot(city1, city2):
-    t = np.linspace(0, 10, 500)
-    y = np.sin(t * 2 * 3.141)
-    plt.plot(t, y)
+    create_plot_one_city(city1)
+    create_plot_one_city(city2)
     plt.axis('off')
     memdata = io.BytesIO()
     plt.savefig(memdata, format='png')
@@ -53,14 +52,21 @@ def create_plot(city1, city2):
     return image
 
 
+def create_plot_one_city(city):
+    df = app.df_acc[app.df_acc.SEMEL_YISHUV == int(city)]
+    if not df.empty:
+        df = df.groupby("SHNAT_TEUNA", as_index=False).size()
+        plt.plot(df)
+
+
 def load_markers():
     df_cities = pd.read_csv("static/data/cities.csv", encoding="cp1255")
-    df_acc = pd.concat(pd.read_csv(filename, encoding="cp1255") for filename in
+    app.df_acc = pd.concat(pd.read_csv(filename, encoding="cp1255") for filename in
                        glob("static/data/lms/Accidents Type */*/*AccData.csv"))
-    df_acc = df_acc[df_acc.SEMEL_YISHUV > 0]
-    groups = df_acc.groupby(["SEMEL_YISHUV", "HUMRAT_TEUNA"], as_index=False)
+    app.df_acc = app.df_acc[app.df_acc.SEMEL_YISHUV > 0]
+    groups = app.df_acc.groupby(["SEMEL_YISHUV", "HUMRAT_TEUNA"], as_index=False)
     df_size = groups.size()
-    df_size_total = df_acc.groupby("SEMEL_YISHUV", as_index=False).size()
+    df_size_total = app.df_acc.groupby("SEMEL_YISHUV", as_index=False).size()
     max_size = df_size_total.max()
     df = groups.mean()
     df = pd.merge(df, df_cities, left_on="SEMEL_YISHUV", right_on="SEMEL")
@@ -89,6 +95,7 @@ def load_markers():
             "young_count": 200,
             "middle_count": 70,
             "old_count": 30,
+            "id": row.SEMEL_YISHUV,
         })
     print "Created %d markers" % len(app.markers)
 
