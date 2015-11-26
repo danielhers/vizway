@@ -39,7 +39,7 @@ def load_markers():
     app.markers = []
     for index, row in df.iterrows():
         lng, lat = coordinates_converter.convert(row.X, row.Y)
-        size = 50 * np.log(1.1 + df_size_total[row.SEMEL_YISHUV] / float(max_size))
+        size = 30 * np.log(1.25 + df_size_total[row.SEMEL_YISHUV] / float(max_size))
         size_per_severity = df_size[row.SEMEL_YISHUV]
         color = max(0, 200 - 200 * (size_per_severity.get(1, 0) +
                                     size_per_severity.get(2, 0)) /
