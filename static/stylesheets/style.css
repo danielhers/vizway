@@ -9,6 +9,7 @@ body, html {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
 		"Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 	color: #ffffff;
+	direction: rtl;
 }
 
 a {
@@ -20,7 +21,7 @@ a:hover {
 	text-decoration: underline;
 }
 
-.newappIcon {
+.logo {
 	padding-top: 10%;
 	display: block;
 	margin: 0 auto;
