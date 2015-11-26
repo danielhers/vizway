@@ -24,6 +24,16 @@ function fetchMarkers() {
                 map: map,
                 title: value.title
             });
+            marker.addListener("click", function() {
+                showDetails(value.title);
+            });
         });
     });
+}
+
+function showDetails(city) {
+    $("#details").show();
+    $("html, body").animate({
+        scrollTop: $("#details").offset().top
+    }, 2000);
 }

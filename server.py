@@ -23,7 +23,6 @@ class MarkersHandler(tornado.web.RequestHandler):
         data = {"markers": app.markers}
         output = json.dumps(data, ensure_ascii=False).encode("utf-8")
         self.write(output)
-        print "Sent %d markers" % len(app.markers)
 
 
 def load_markers():
@@ -46,7 +45,6 @@ def load_markers():
         color = max(0, 200 - 200 * (size_per_severity.get(1, 0) +
                                     size_per_severity.get(2, 0)) /
                     size_per_severity.get(3, 1))
-        print size
         app.markers.append({
             "lat": lat,
             "lng": lng,
@@ -54,6 +52,7 @@ def load_markers():
             "size": size,
             "color": color
         })
+    print "Created %d markers" % len(app.markers)
 
 
 def make_app():

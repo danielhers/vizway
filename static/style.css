@@ -2,24 +2,41 @@
  * This file provides css styles.
  */
 body, html {
-	background-color: #3b4b54;
+	background-color: #FFFFFF;
 	width: 100%;
 	height: 100%;
 	margin: 0 auto;
     padding: 0;
-	font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
-		"Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-	color: #ffffff;
+	font-family: "Alef";
+	color: #000000;
 	direction: rtl;
 }
 
 #map_canvas {
-height: 100%;
+    height: 100%;
+}
+
+#details {
+    margin: auto;
+    height: 100%;
+    width: 40%;
+    padding: 85px;
+    display: none;
+    text-align: center;
+}
+
+#severities {
+    text-align: center;
+    margin: 85px;
+}
+
+.separator {
+    height: 45px;
 }
 
 a {
 	text-decoration: none;
-	color: #00aed1;
+	color: #000000;
 }
 
 a:hover {
@@ -39,30 +56,24 @@ h1 {
 	font-size: 2em;
 }
 
-.leftHalf {
-	float: left;
-	background-color: #26343f;
-	width: 45%;
-	height: 100%;
-}
-
-.rightHalf {
-	float: right;
-	width: 55%;
-	background-color: #313f4a;
-	height: 100%;
-	overflow: auto;
+.message {
+	padding-left: 50px;
+	padding-right: 50px;
+	text-align: center;
+	font-size: 21pt;
+    text-align: right;
 }
 
 .description {
 	padding-left: 50px;
 	padding-right: 50px;
 	text-align: center;
-	font-size: 1.2em;
+	font-size: 18pt;
+    text-align: right;
 }
 
-.blue {
-	color: #00aed1;
+.number {
+	font-size: 48pt;
 }
 
 table {
