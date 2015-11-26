@@ -13,6 +13,14 @@ function fetchMarkers() {
         $.each(data.markers, function(index, value) {
             var marker = new google.maps.Marker({
                 position: {lat: value.lat, lng: value.lng},
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    strokeColor: '#FFFFFF',
+                    strokeWeight: 1,
+                    fillColor: '#FF0000',
+                    fillOpacity: 1,
+                    scale: value.size
+                },
                 map: map,
                 title: value.title
             });
