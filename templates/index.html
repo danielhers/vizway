@@ -22,15 +22,19 @@
 <div id="map_canvas"></div>
 <div id="details">
     <p class="description">בעשור האחרון התרחשו</p>
-    <p class="number" id="total_accidents"></p>
-    <p class="message-tight">תאונות דרכים ב<span id="city_name"></span>,</p>
+    <p class="number" id="total-accidents"></p>
+    <p class="message-tight">תאונות דרכים ב<span id="city-name"></span>,</p>
     <p class="description-tight">מתוכן:</p>
     <div id="severities">
-        <p class="number-tight" id="light_accidents"></p>
+        <p class="number-tight" id="light-accidents"></p>
         <p class="message-tight">תאונות קלות</p>
         <div class="separator"></div>
-        <p class="number-tight" id="severe_accidents"></p>
+        <p class="number-tight" id="severe-accidents"></p>
         <p class="message-tight">תאונות קשות</p>
+    </div>
+    <div id="severities-chart">
+        <div id="chart-light"></div>
+        <div id="chart-severe"></div>
     </div>
 </div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>

@@ -12,6 +12,7 @@ import tornado.web
 from geo import ItmToWGS84
 
 coordinates_converter = ItmToWGS84()
+CHART_SCALE = 10
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -40,10 +41,11 @@ def load_markers():
     app.markers = []
     for index, row in df.iterrows():
         lng, lat = coordinates_converter.convert(row.X, row.Y)
-        size = 30 * np.log(1.25 + df_size_total[row.SEMEL_YISHUV] / float(max_size))
+        size = count_to_size(df_size_total[row.SEMEL_YISHUV], max_size)
         size_per_severity = df_size[row.SEMEL_YISHUV]
         light = size_per_severity.get(3, 1)
         severe = size_per_severity.get(1, 0) + size_per_severity.get(2, 0)
+        normalizer = max(light, severe)
         color = max(0, 200 - 200 * severe / light)
         app.markers.append({
             "lat": lat,
@@ -54,8 +56,14 @@ def load_markers():
             "total": df_size_total[row.SEMEL_YISHUV],
             "light": light,
             "severe": severe,
+            "light_size": CHART_SCALE * count_to_size(light, normalizer),
+            "severe_size": CHART_SCALE * count_to_size(severe, normalizer),
         })
     print "Created %d markers" % len(app.markers)
+
+
+def count_to_size(count, max_size):
+    return 30 * np.log(1.25 + count / float(max_size)) if count else 0
 
 
 def make_app():

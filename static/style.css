@@ -30,8 +30,32 @@ body, html {
 }
 
 #severities {
+    float: left;
     text-align: center;
     padding: 45px;
+    height: 50%;
+    width: 30%;
+}
+
+#severities-chart {
+    float: right;
+    width: 27%;
+}
+
+#chart-light {
+    border: 1px solid #FFFFFF;
+	background-color: #FEB700;
+    position: relative;
+    transform: translate(50%, 20%);
+    z-index: 1;
+}
+
+#chart-severe {
+    border: 1px solid #FFFFFF;
+	background-color: #FC5200;
+    position: relative;
+    transform: translate(50%, 25%);
+    z-index: 2;
 }
 
 .separator {

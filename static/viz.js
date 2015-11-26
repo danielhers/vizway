@@ -33,11 +33,19 @@ function fetchMarkers() {
 
 function showDetails(city) {
     $("#details").show();
-    $("#total_accidents").text(city.total);
-    $("#city_name").text(city.title);
-    $("#light_accidents").text(city.light);
-    $("#severe_accidents").text(city.severe);
+    $("#total-accidents").text(city.total);
+    $("#city-name").text(city.title);
+    $("#light-accidents").text(city.light);
+    $("#severe-accidents").text(city.severe);
+    drawCircle("chart-light", city.light_size);
+    drawCircle("chart-severe", city.severe_size);
     $("html, body").animate({
         scrollTop: $("#details").offset().top
     }, 2000);
+}
+
+function drawCircle(id, size) {
+    $("#" + id).css("width", size);
+    $("#" + id).css("height", size);
+    $("#" + id).css("border-radius", size/2);
 }
