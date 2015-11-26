@@ -12,6 +12,10 @@ body, html {
 	direction: rtl;
 }
 
+#header {
+    text-align: right;
+}
+
 #map_canvas {
     height: 100%;
 }
@@ -20,14 +24,14 @@ body, html {
     margin: auto;
     height: 100%;
     width: 40%;
-    padding: 45px;
+    padding: auto;
     display: none;
     text-align: center;
 }
 
 #severities {
     text-align: center;
-    margin: 45px;
+    padding: 45px;
 }
 
 .separator {
@@ -59,20 +63,36 @@ h1 {
 .message {
 	padding-left: 50px;
 	padding-right: 50px;
-	text-align: center;
 	font-size: 21pt;
-    text-align: right;
+}
+
+.message-tight {
+    margin: 0px;
+	padding-left: 50px;
+	padding-right: 50px;
+	font-size: 21pt;
 }
 
 .description {
 	padding-left: 50px;
 	padding-right: 50px;
-	text-align: center;
 	font-size: 18pt;
-    text-align: right;
+}
+
+.description-tight {
+    margin: 0px;
+	padding-left: 50px;
+	padding-right: 50px;
+	font-size: 18pt;
 }
 
 .number {
+    margin: 10px;
+	font-size: 48pt;
+}
+
+.number-tight {
+    margin: 0px;
 	font-size: 48pt;
 }
 
