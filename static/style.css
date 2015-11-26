@@ -101,15 +101,14 @@ a:hover {
 .side-icon {
 	padding-top: 10%;
 	display: block;
-	margin: 0 auto;
+	margin: auto;
 	padding-bottom: 2em;
 	max-width: 200px;
 }
 
 .plot {
-	padding-top: 10%;
 	display: block;
-	margin: 0 auto;
+	margin: auto 0;
 	padding-bottom: 2em;
 	max-width: 80%;
 }

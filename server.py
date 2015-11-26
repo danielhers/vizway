@@ -4,8 +4,14 @@ import json
 import os
 from glob import glob
 
+import matplotlib
 import numpy as np
 import pandas as pd
+
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import io
+
 import tornado.ioloop
 import tornado.web
 
@@ -24,6 +30,27 @@ class MarkersHandler(tornado.web.RequestHandler):
         data = {"markers": app.markers}
         output = json.dumps(data, ensure_ascii=False).encode("utf-8")
         self.write(output)
+
+
+class TimelineHandler(tornado.web.RequestHandler):
+    def get(self):
+        city1 = self.get_argument("city1")
+        city2 = self.get_argument("city2")
+        image = create_plot(city1, city2)
+        self.set_header('Content-type', 'image/png')
+        self.set_header('Content-length', len(image))
+        self.write(image)
+
+
+def create_plot(city1, city2):
+    t = np.linspace(0, 10, 500)
+    y = np.sin(t * 2 * 3.141)
+    plt.plot(t, y)
+    plt.axis('off')
+    memdata = io.BytesIO()
+    plt.savefig(memdata, format='png')
+    image = memdata.getvalue()
+    return image
 
 
 def load_markers():
@@ -75,6 +102,7 @@ def make_app():
         [
             (r"/", MainHandler),
             (r"/markers", MarkersHandler),
+            (r"/timeline.png", TimelineHandler),
         ],
         template_path=os.path.join(os.path.dirname(__file__), "templates"),
         static_path=os.path.join(os.path.dirname(__file__), "static"),

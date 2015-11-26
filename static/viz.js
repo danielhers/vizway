@@ -66,5 +66,6 @@ function showComparison(city, compared_city) {
     $("#timeline-comparison").show();
     $("#city-name1").text(city.title);
     $("#city-name2").text(compared_city.title);
-    $("#timeline-plot").src("timeline.png?city1=" + city.id + "&city2=" + compared_city.id);
+    $("#timeline-plot").attr("src",
+        "timeline.png?city1=" + city.id + "&city2=" + compared_city.id);
 }
