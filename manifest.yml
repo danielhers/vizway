@@ -4,5 +4,5 @@ applications:
   instances: 1
   domain: eu-gb.mybluemix.net
   name: VIZWAY
-  host: anyway
+  host: vizway
   disk_quota: 1024M
