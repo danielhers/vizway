@@ -20,14 +20,14 @@ body, html {
     margin: auto;
     height: 100%;
     width: 40%;
-    padding: 85px;
+    padding: 45px;
     display: none;
     text-align: center;
 }
 
 #severities {
     text-align: center;
-    margin: 85px;
+    margin: 45px;
 }
 
 .separator {

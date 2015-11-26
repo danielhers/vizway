@@ -10,22 +10,22 @@ function initMap() {
 
 function fetchMarkers() {
     $.getJSON("/markers", function(data) {
-        $.each(data.markers, function(index, value) {
+        $.each(data.markers, function(index, city) {
             var marker = new google.maps.Marker({
-                position: {lat: value.lat, lng: value.lng},
+                position: {lat: city.lat, lng: city.lng},
                 icon: {
                     path: google.maps.SymbolPath.CIRCLE,
                     strokeColor: "#FFFFFF",
                     strokeWeight: 1,
-                    fillColor: "rgb(255, " + value.color + ", 0)",
+                    fillColor: "rgb(255, " + city.color + ", 0)",
                     fillOpacity: 1,
-                    scale: value.size
+                    scale: city.size
                 },
                 map: map,
-                title: value.title
+                title: city.title
             });
             marker.addListener("click", function() {
-                showDetails(value.title);
+                showDetails(city);
             });
         });
     });
@@ -33,6 +33,10 @@ function fetchMarkers() {
 
 function showDetails(city) {
     $("#details").show();
+    $("#total_accidents").text(city.total);
+    $("#city_name").text(city.title);
+    $("#light_accidents").text(city.light);
+    $("#severe_accidents").text(city.severe);
     $("html, body").animate({
         scrollTop: $("#details").offset().top
     }, 2000);

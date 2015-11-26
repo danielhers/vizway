@@ -42,15 +42,18 @@ def load_markers():
         lng, lat = coordinates_converter.convert(row.X, row.Y)
         size = 30 * np.log(1.25 + df_size_total[row.SEMEL_YISHUV] / float(max_size))
         size_per_severity = df_size[row.SEMEL_YISHUV]
-        color = max(0, 200 - 200 * (size_per_severity.get(1, 0) +
-                                    size_per_severity.get(2, 0)) /
-                    size_per_severity.get(3, 1))
+        light = size_per_severity.get(3, 1)
+        severe = size_per_severity.get(1, 0) + size_per_severity.get(2, 0)
+        color = max(0, 200 - 200 * severe / light)
         app.markers.append({
             "lat": lat,
             "lng": lng,
             "title": row.NAME,
             "size": size,
-            "color": color
+            "color": color,
+            "total": df_size_total[row.SEMEL_YISHUV],
+            "light": light,
+            "severe": severe,
         })
     print "Created %d markers" % len(app.markers)
 
