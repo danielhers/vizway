@@ -58,6 +58,25 @@ body, html {
     z-index: 2;
 }
 
+#involved {
+    display: none;
+    background-color: #F1EFE8;
+    margin: auto;
+    height: 100%;
+    width: 100%;
+    padding: auto;
+    text-align: center;
+}
+
+#timeline-comparison {
+    display: none;
+    margin: auto;
+    height: 100%;
+    width: 100%;
+    padding: auto;
+    text-align: center;
+}
+
 .separator {
     height: 45px;
 }
@@ -77,6 +96,22 @@ a:hover {
 	margin: 0 auto;
 	padding-bottom: 2em;
 	max-width: 200px;
+}
+
+.side-icon {
+	padding-top: 10%;
+	display: block;
+	margin: 0 auto;
+	padding-bottom: 2em;
+	max-width: 200px;
+}
+
+.plot {
+	padding-top: 10%;
+	display: block;
+	margin: 0 auto;
+	padding-bottom: 2em;
+	max-width: 80%;
 }
 
 h1 {
@@ -118,6 +153,11 @@ h1 {
 .number-tight {
     margin: 0px;
 	font-size: 48pt;
+}
+
+.number-small {
+    margin: 0px;
+	font-size: 20pt;
 }
 
 table {

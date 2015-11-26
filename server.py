@@ -58,6 +58,10 @@ def load_markers():
             "severe": severe,
             "light_size": CHART_SCALE * count_to_size(light, normalizer),
             "severe_size": CHART_SCALE * count_to_size(severe, normalizer),
+            "involved_count": 300,
+            "young_count": 200,
+            "middle_count": 70,
+            "old_count": 30,
         })
     print "Created %d markers" % len(app.markers)
 

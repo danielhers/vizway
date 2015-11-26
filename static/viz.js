@@ -26,6 +26,9 @@ function fetchMarkers() {
             });
             marker.addListener("click", function() {
                 showDetails(city);
+                showInvolved(city);
+                compared_city = {id: 51, title: "תל אביב-יפו"}
+                showComparison(city, compared_city);
             });
         });
     });
@@ -39,6 +42,7 @@ function showDetails(city) {
     $("#severe-accidents").text(city.severe);
     drawCircle("chart-light", city.light_size);
     drawCircle("chart-severe", city.severe_size);
+
     $("html, body").animate({
         scrollTop: $("#details").offset().top
     }, 2000);
@@ -48,4 +52,19 @@ function drawCircle(id, size) {
     $("#" + id).css("width", size);
     $("#" + id).css("height", size);
     $("#" + id).css("border-radius", size/2);
+}
+
+function showInvolved(city) {
+    $("#involved").show();
+    $("#involved-num").text(city.involved_count);
+    $("#young-num").text(city.young_count);
+    $("#middle-num").text(city.middle_count);
+    $("#old-num").text(city.old_count);
+}
+
+function showComparison(city, compared_city) {
+    $("#timeline-comparison").show();
+    $("#city-name1").text(city.title);
+    $("#city-name2").text(compared_city.title);
+    $("#timeline-plot").src("timeline.png?city1=" + city.id + "&city2=" + compared_city.id);
 }
