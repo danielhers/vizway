@@ -5,9 +5,13 @@ function initMap() {
         zoom: 8
     });
 
-    var marker = new google.maps.Marker({
-        position: {lat: 32.0833, lng: 34.8000},
-        map: map,
-        title: 'תל אביב'
+    $.getJSON("/markers", function(data) {
+        $.each(data.markers, function(index, value) {
+            var marker = new google.maps.Marker({
+                position: {lat: value.lat, lng: value.lng},
+                map: map,
+                title: value.title
+            });
+        });
     });
 }
