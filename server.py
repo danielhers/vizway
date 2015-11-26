@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 import json
 import os
+from glob import glob
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import tornado.ioloop
 import tornado.web
 
@@ -27,7 +28,8 @@ class MarkersHandler(tornado.web.RequestHandler):
 
 def load_markers():
     df_cities = pd.read_csv("static/data/cities.csv", encoding="cp1255")
-    df_acc = pd.read_csv("static/data/lms/Accidents Type 3/H20141041/H20141041AccData.csv", encoding="cp1255")
+    df_acc = pd.concat(pd.read_csv(filename, encoding="cp1255") for filename in
+                       glob("static/data/lms/Accidents Type */*/*AccData.csv"))
     df_acc = df_acc[df_acc.SEMEL_YISHUV > 0]
     groups = df_acc.groupby(["SEMEL_YISHUV", "HUMRAT_TEUNA"], as_index=False)
     df_size = groups.size()
