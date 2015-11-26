@@ -15,9 +15,9 @@ function fetchMarkers() {
                 position: {lat: value.lat, lng: value.lng},
                 icon: {
                     path: google.maps.SymbolPath.CIRCLE,
-                    strokeColor: '#FFFFFF',
+                    strokeColor: "#FFFFFF",
                     strokeWeight: 1,
-                    fillColor: '#FF0000',
+                    fillColor: "rgb(255, " + value.color + ", 0)",
                     fillOpacity: 1,
                     scale: value.size
                 },

@@ -4,6 +4,7 @@ import json
 import os
 
 import pandas as pd
+import numpy as np
 import tornado.ioloop
 import tornado.web
 
@@ -18,26 +19,39 @@ class MainHandler(tornado.web.RequestHandler):
 
 class MarkersHandler(tornado.web.RequestHandler):
     def get(self):
-        df_cities = pd.read_csv("static/data/cities.csv", encoding="cp1255")
-        df_acc = pd.read_csv("static/data/lms/Accidents Type 3/H20141041/H20141041AccData.csv", encoding="cp1255")
-        groups = df_acc[df_acc.SEMEL_YISHUV > 0].groupby("SEMEL_YISHUV", as_index=False)
-        df_size = groups.size()
-        df = groups.mean()
-        df = pd.merge(df, df_cities, left_on="SEMEL_YISHUV", right_on="SEMEL")
-        df = df[pd.notnull(df.X) & pd.notnull(df.Y) & (df_size > 1)]
-        markers = []
-        for index, row in df.iterrows():
-            lng, lat = coordinates_converter.convert(row.X, row.Y)
-            markers.append({
-                "lat": lat,
-                "lng": lng,
-                "title": row.NAME,
-                "size": df_size[row.SEMEL_YISHUV],
-            })
-        data = {"markers": markers}
+        data = {"markers": app.markers}
         output = json.dumps(data, ensure_ascii=False).encode("utf-8")
         self.write(output)
-        print "Sent %d markers: %s" % (len(markers), markers)
+        print "Sent %d markers" % len(app.markers)
+
+
+def load_markers():
+    df_cities = pd.read_csv("static/data/cities.csv", encoding="cp1255")
+    df_acc = pd.read_csv("static/data/lms/Accidents Type 3/H20141041/H20141041AccData.csv", encoding="cp1255")
+    df_acc = df_acc[df_acc.SEMEL_YISHUV > 0]
+    groups = df_acc.groupby(["SEMEL_YISHUV", "HUMRAT_TEUNA"], as_index=False)
+    df_size = groups.size()
+    df_size_total = df_acc.groupby("SEMEL_YISHUV", as_index=False).size()
+    max_size = df_size_total.max()
+    df = groups.mean()
+    df = pd.merge(df, df_cities, left_on="SEMEL_YISHUV", right_on="SEMEL")
+    df = df[pd.notnull(df.X) & pd.notnull(df.Y) & (df_size_total > 1)]
+    app.markers = []
+    for index, row in df.iterrows():
+        lng, lat = coordinates_converter.convert(row.X, row.Y)
+        size = 50 * np.log(1.1 + df_size_total[row.SEMEL_YISHUV] / float(max_size))
+        size_per_severity = df_size[row.SEMEL_YISHUV]
+        color = max(0, 200 - 200 * (size_per_severity.get(1, 0) +
+                                    size_per_severity.get(2, 0)) /
+                    size_per_severity.get(3, 1))
+        print size
+        app.markers.append({
+            "lat": lat,
+            "lng": lng,
+            "title": row.NAME,
+            "size": size,
+            "color": color
+        })
 
 
 def make_app():
@@ -54,5 +68,6 @@ def make_app():
 
 if __name__ == "__main__":
     app = make_app()
+    load_markers()
     app.listen(8000)
     tornado.ioloop.IOLoop.current().start()
