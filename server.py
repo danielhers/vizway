@@ -24,7 +24,7 @@ class MarkersHandler(tornado.web.RequestHandler):
         df_size = groups.size()
         df = groups.mean()
         df = pd.merge(df, df_cities, left_on="SEMEL_YISHUV", right_on="SEMEL")
-        df = df[pd.notnull(df.X) & pd.notnull(df.Y)]
+        df = df[pd.notnull(df.X) & pd.notnull(df.Y) & (df_size > 1)]
         markers = []
         for index, row in df.iterrows():
             lng, lat = coordinates_converter.convert(row.X, row.Y)
@@ -35,8 +35,9 @@ class MarkersHandler(tornado.web.RequestHandler):
                 "size": df_size[row.SEMEL_YISHUV],
             })
         data = {"markers": markers}
-        output = json.dumps(data, ensure_ascii=False).encode("cp1255")
+        output = json.dumps(data, ensure_ascii=False).encode("utf-8")
         self.write(output)
+        print "Sent %d markers: %s" % (len(markers), markers)
 
 
 def make_app():
@@ -47,6 +48,7 @@ def make_app():
         ],
         template_path=os.path.join(os.path.dirname(__file__), "templates"),
         static_path=os.path.join(os.path.dirname(__file__), "static"),
+        debug=True,
     )
 
 

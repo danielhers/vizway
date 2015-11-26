@@ -5,6 +5,10 @@ function initMap() {
         zoom: 8
     });
 
+    fetchMarkers();
+}
+
+function fetchMarkers() {
     $.getJSON("/markers", function(data) {
         $.each(data.markers, function(index, value) {
             var marker = new google.maps.Marker({
