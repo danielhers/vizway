@@ -62,9 +62,16 @@
 <div id="timeline-comparison">
     <table>
         <tr>
-            <td class="message-tight" id="city-name1"></td>
-            <td class="description-tight">לעומת</td>
-            <td class="message-tight" id="city-name2"></td>
+            <td class="message-tight" style="max-width: 15%; text-align: center;" id="city-name1"></td>
+            <td class="description-tight" style="text-align: center;">לעומת</td>
+            <td class="message-tight" style="max-width: 15%; text-align: center;" id="city-name2"></td>
+        </tr>
+        <tr>
+            <td><img style="margin: auto; width: 50%;"
+                     class="side-icon" src="{{ static_url("images/orange.gif") }}"></td>
+            <td></td>
+            <td><img style="margin: auto; width: 50%;"
+                     class="side-icon" src="{{ static_url("images/red.gif") }}"></td>
         </tr>
     </table>
     <img class="plot" id="timeline-plot">
