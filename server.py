@@ -44,6 +44,7 @@ class TimelineHandler(tornado.web.RequestHandler):
 
 
 def create_plot(city1, city2):
+    plt.figure()
     years1 = create_plot_one_city(city1, "#FC5200")
     years2 = create_plot_one_city(city2, "#FEB700")
     plt.axvline(0)
@@ -61,7 +62,8 @@ def create_plot(city1, city2):
 
 
 def create_plot_one_city(city, color):
-    df = app.df_acc[app.df_acc.SEMEL_YISHUV == int(city)].copy()
+    df = app.df_acc
+    df = df[df.SEMEL_YISHUV == int(city)]
     if df.empty:
         return [np.nan]
     years = df.SHNAT_TEUNA
@@ -72,10 +74,10 @@ def create_plot_one_city(city, color):
 
 def load_markers():
     print "Creating markers...",
-    app.df_cities = pd.read_csv("static/data/cities.csv", encoding="cp1255")
+    df_cities = pd.read_csv("static/data/cities.csv", encoding="cp1255")
     app.df_acc = pd.concat(pd.read_csv(filename, encoding="cp1255") for filename in
                            glob("static/data/lms/Accidents Type 3/*/*AccData.csv"))
-    app.df_inv = pd.concat(pd.read_csv(filename, encoding="cp1255") for filename in
+    df_inv = pd.concat(pd.read_csv(filename, encoding="cp1255") for filename in
                            glob("static/data/lms/Accidents Type 3/*/*InvData.csv"))
     app.df_acc = app.df_acc[app.df_acc.SEMEL_YISHUV > 0]
 
@@ -85,11 +87,11 @@ def load_markers():
     df_size_total = app.df_acc.groupby("SEMEL_YISHUV", as_index=False).size()
     max_size = df_size_total.max()
     df_markers = groups.mean()
-    df_markers = pd.merge(df_markers, app.df_cities, left_on="SEMEL_YISHUV", right_on="SEMEL")
+    df_markers = pd.merge(df_markers, df_cities, left_on="SEMEL_YISHUV", right_on="SEMEL")
     df_markers = df_markers[pd.notnull(df_markers.X) & pd.notnull(df_markers.Y) & (df_size_total > 1)]
 
     # Involved individuals counts
-    df_involved = pd.merge(app.df_acc, app.df_inv,
+    df_involved = pd.merge(app.df_acc, df_inv,
                            left_on=["pk_teuna_fikt", "sug_tik"],
                            right_on=["pk_teuna_fikt", "SUG_TIK"])
     df_involved = df_involved.groupby(["SEMEL_YISHUV",
