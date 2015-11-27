@@ -98,6 +98,10 @@ a:hover {
 	max-width: 200px;
 }
 
+.legend {
+	max-width: 30px;
+}
+
 .side-icon {
 	padding-top: 10%;
 	display: block;

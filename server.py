@@ -43,24 +43,35 @@ class TimelineHandler(tornado.web.RequestHandler):
 
 
 def create_plot(city1, city2):
-    create_plot_one_city(city1)
-    create_plot_one_city(city2)
-    plt.axis('off')
+    years1 = create_plot_one_city(city1, "#FC5200")
+    years2 = create_plot_one_city(city2, "#FEB700")
+    plt.axvline(0)
+    years = np.concatenate((years1, years2))
+    plt.xticks([int(np.nanmin(years)), int(np.nanmax(years))])
+    plt.xlabel("")
+    plt.gca().spines['right'].set_visible(False)
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().ticklabel_format(useOffset=False)
+    plt.gca().yaxis.set_major_locator(plt.NullLocator())
     memdata = io.BytesIO()
     plt.savefig(memdata, format='png')
     image = memdata.getvalue()
     return image
 
 
-def create_plot_one_city(city):
+def create_plot_one_city(city, color):
     df = app.df_acc[app.df_acc.SEMEL_YISHUV == int(city)]
-    if not df.empty:
-        df = df.groupby("SHNAT_TEUNA", as_index=False).size()
-        plt.plot(df)
+    if df.empty:
+        return [np.nan]
+    years = df.SHNAT_TEUNA
+    df = df.groupby("SHNAT_TEUNA").size()
+    df.plot(color=color)
+    return years
 
 
 def load_markers():
-    df_cities = pd.read_csv("static/data/cities.csv", encoding="cp1255")
+    print "Creating markers...",
+    app.df_cities = pd.read_csv("static/data/cities.csv", encoding="cp1255")
     app.df_acc = pd.concat(pd.read_csv(filename, encoding="cp1255") for filename in
                        glob("static/data/lms/Accidents Type */*/*AccData.csv"))
     app.df_acc = app.df_acc[app.df_acc.SEMEL_YISHUV > 0]
@@ -69,7 +80,7 @@ def load_markers():
     df_size_total = app.df_acc.groupby("SEMEL_YISHUV", as_index=False).size()
     max_size = df_size_total.max()
     df = groups.mean()
-    df = pd.merge(df, df_cities, left_on="SEMEL_YISHUV", right_on="SEMEL")
+    df = pd.merge(df, app.df_cities, left_on="SEMEL_YISHUV", right_on="SEMEL")
     df = df[pd.notnull(df.X) & pd.notnull(df.Y) & (df_size_total > 1)]
     app.markers = []
     for index, row in df.iterrows():
@@ -97,7 +108,7 @@ def load_markers():
             "old_count": 30,
             "id": row.SEMEL_YISHUV,
         })
-    print "Created %d markers" % len(app.markers)
+    print "%d done" % len(app.markers)
 
 
 def count_to_size(count, max_size):

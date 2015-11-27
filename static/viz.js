@@ -4,6 +4,8 @@ function initMap() {
         center: {lat: 32.0833, lng: 34.8000},
         zoom: 8
     });
+    map.controls[google.maps.ControlPosition.LEFT_TOP].push(
+        document.getElementById("map_legend"));
 
     fetchMarkers();
 }
