@@ -107,7 +107,7 @@ def load_markers():
         light = severity_count.get(3, 1)
         severe = severity_count.get(1, 0) + severity_count.get(2, 0)
         normalizer = max(light, severe)
-        color = max(0, 200 - 200 * severe / light)
+        color = max(0, int(200 - 2000 * float(severe) / light))
 
         age_count = df_involved[row.SEMEL_YISHUV]
         involved = age_count.sum()
