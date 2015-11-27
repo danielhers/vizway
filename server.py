@@ -133,6 +133,7 @@ def load_markers():
             "old_count": old,
             "id": row.SEMEL_YISHUV,
         })
+    app.markers.sort(key=lambda marker: marker["title"])
     print "%d done" % len(app.markers)
 
 

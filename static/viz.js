@@ -30,7 +30,7 @@ function fetchMarkers() {
                 showDetails(city);
                 showInvolved(city);
                 compared_city = {id: 5000, title: "תל אביב -יפו"}
-                showComparison(city, compared_city);
+                showComparison(city, compared_city, data);
             });
         });
     });
@@ -64,10 +64,24 @@ function showInvolved(city) {
     $("#old-num").text(city.old_count);
 }
 
-function showComparison(city, compared_city) {
+function showComparison(city, compared_city, data) {
     $("#timeline-comparison").show();
     $("#city-name1").text(city.title);
-    $("#city-name2").text(compared_city.title);
-    $("#timeline-plot").attr("src",
-        "timeline.png?city1=" + city.id + "&city2=" + compared_city.id);
+    var dropdown = $('<select id="compared_city_dropdown"/>');
+    $.each(data.markers, function(index, city) {
+        $('<option />', {value: city.id, text: city.title}).appendTo(dropdown);
+    });
+    $("#city-name2").html(dropdown);
+    $("#compared_city_dropdown").change(function() {
+        changeComparedCity(city.id, $(this).val());
+    });
+    changeComparedCity(city.id, compared_city.id);
+}
+
+function changeComparedCity(city_id, compared_city_id) {
+    var image = $("#timeline-plot");
+    image.fadeOut("fast", function () {
+        image.attr("src", "timeline.png?city1=" + city_id + "&city2=" + compared_city_id);
+        image.fadeIn("fast");
+    });
 }
