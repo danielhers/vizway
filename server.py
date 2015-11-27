@@ -19,6 +19,7 @@ from geo import ItmToWGS84
 
 coordinates_converter = ItmToWGS84()
 CHART_SCALE = 10
+AGE_BINS = [1, 4, 14, 99]
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -60,7 +61,7 @@ def create_plot(city1, city2):
 
 
 def create_plot_one_city(city, color):
-    df = app.df_acc[app.df_acc.SEMEL_YISHUV == int(city)]
+    df = app.df_acc[app.df_acc.SEMEL_YISHUV == int(city)].copy()
     if df.empty:
         return [np.nan]
     years = df.SHNAT_TEUNA
@@ -73,24 +74,46 @@ def load_markers():
     print "Creating markers...",
     app.df_cities = pd.read_csv("static/data/cities.csv", encoding="cp1255")
     app.df_acc = pd.concat(pd.read_csv(filename, encoding="cp1255") for filename in
-                       glob("static/data/lms/Accidents Type */*/*AccData.csv"))
+                           glob("static/data/lms/Accidents Type 3/*/*AccData.csv"))
+    app.df_inv = pd.concat(pd.read_csv(filename, encoding="cp1255") for filename in
+                           glob("static/data/lms/Accidents Type 3/*/*InvData.csv"))
     app.df_acc = app.df_acc[app.df_acc.SEMEL_YISHUV > 0]
+
+    # Severity counts per city
     groups = app.df_acc.groupby(["SEMEL_YISHUV", "HUMRAT_TEUNA"], as_index=False)
     df_size = groups.size()
     df_size_total = app.df_acc.groupby("SEMEL_YISHUV", as_index=False).size()
     max_size = df_size_total.max()
-    df = groups.mean()
-    df = pd.merge(df, app.df_cities, left_on="SEMEL_YISHUV", right_on="SEMEL")
-    df = df[pd.notnull(df.X) & pd.notnull(df.Y) & (df_size_total > 1)]
+    df_markers = groups.mean()
+    df_markers = pd.merge(df_markers, app.df_cities, left_on="SEMEL_YISHUV", right_on="SEMEL")
+    df_markers = df_markers[pd.notnull(df_markers.X) & pd.notnull(df_markers.Y) & (df_size_total > 1)]
+
+    # Involved individuals counts
+    df_involved = pd.merge(app.df_acc, app.df_inv,
+                           left_on=["pk_teuna_fikt", "sug_tik"],
+                           right_on=["pk_teuna_fikt", "SUG_TIK"])
+    df_involved = df_involved.groupby(["SEMEL_YISHUV",
+                                       np.digitize(df_involved.KVUZA_GIL, bins=AGE_BINS)],
+                                      as_index=False).size()
+
     app.markers = []
-    for index, row in df.iterrows():
+    for index, row in df_markers.iterrows():
         lng, lat = coordinates_converter.convert(row.X, row.Y)
         size = count_to_size(df_size_total[row.SEMEL_YISHUV], max_size)
-        size_per_severity = df_size[row.SEMEL_YISHUV]
-        light = size_per_severity.get(3, 1)
-        severe = size_per_severity.get(1, 0) + size_per_severity.get(2, 0)
+
+        severity_count = df_size[row.SEMEL_YISHUV]
+        light = severity_count.get(3, 1)
+        severe = severity_count.get(1, 0) + severity_count.get(2, 0)
         normalizer = max(light, severe)
         color = max(0, 200 - 200 * severe / light)
+
+        age_count = df_involved[row.SEMEL_YISHUV]
+        involved = age_count.sum()
+        young = age_count.get(1, 0)
+        middle = age_count.get(2, 0)
+        old = age_count.get(3, 0)
+        # 4 (that is 99 before binning) is unknown age
+
         app.markers.append({
             "lat": lat,
             "lng": lng,
@@ -102,10 +125,10 @@ def load_markers():
             "severe": severe,
             "light_size": CHART_SCALE * count_to_size(light, normalizer),
             "severe_size": CHART_SCALE * count_to_size(severe, normalizer),
-            "involved_count": 300,
-            "young_count": 200,
-            "middle_count": 70,
-            "old_count": 30,
+            "involved_count": involved,
+            "young_count": young,
+            "middle_count": middle,
+            "old_count": old,
             "id": row.SEMEL_YISHUV,
         })
     print "%d done" % len(app.markers)
